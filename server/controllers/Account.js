@@ -56,9 +56,51 @@ const signup = async (req, res) => {
   }
 };
 
+const changePasswordPage = (req, res) => res.render('changePassword');
+
+const changePassword = async (req, res) => {
+  const oldPass = `${req.body.oldPass}`;
+  const newPass = `${req.body.newPass}`;
+  const newPass2 = `${req.body.newPass2}`;
+
+  // Make sure all fields were filled out
+  if (!oldPass || !newPass || !newPass2) {
+    return res.status(400).json({ error: 'All fields are required!' });
+  }
+
+  // Make sure new passwords match
+  if (newPass !== newPass2) {
+    return res.status(400).json({ error: 'Passwords do not match!' });
+  }
+
+  // Check that the correct current password was given
+  return Account.authenticate(req.session.account.username, oldPass, async (err, account) => {
+    if (err || !account) {
+      return res.status(401).json({ error: 'Wrong password!' });
+    }
+
+    try {
+      // hash the new password
+      const hash = await Account.generateHash(newPass);
+
+      // Update user's password
+      const user = { _id: req.session.account._id };
+      await Account.updateOne(user, { $set: { password: hash } });
+
+      // Send user back to maker page
+      return res.json({ redirect: '/maker' });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: 'Error while changing password!' });
+    }
+  });
+};
+
 module.exports = {
   loginPage,
   login,
   logout,
   signup,
+  changePasswordPage,
+  changePassword,
 };

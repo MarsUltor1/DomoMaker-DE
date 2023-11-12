@@ -11,6 +11,9 @@ const router = (app) => {
 
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
 
+  app.get('/changePassword', mid.requiresLogin, controllers.Account.changePasswordPage);
+  app.post('/changePassword', mid.requiresLogin, mid.requiresSecure, controllers.Account.changePassword);
+
   app.get('/maker', mid.requiresLogin, controllers.Domo.makerPage);
   app.post('/maker', mid.requiresLogin, controllers.Domo.makeDomo);
 
