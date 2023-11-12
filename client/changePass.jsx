@@ -9,7 +9,7 @@ const handleChange = (e) => {
     // Get all the inputs
     const oldPass = e.target.querySelector('#oldPass').value;
     const newPass = e.target.querySelector('#newPass').value;
-    const newPass2 = e.target.querySelector('#newPass').value;
+    const newPass2 = e.target.querySelector('#newPass2').value;
 
     // Check that all the inputs were filled out
     if (!oldPass || !newPass || !newPass2) {
